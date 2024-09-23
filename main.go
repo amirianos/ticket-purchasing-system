@@ -37,18 +37,50 @@ func InitJaeger(service string) (opentracing.Tracer, func()) {
 // Database simulates the Database service
 func Database(ctx context.Context) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "DatabaseArea")
+	span.SetTag("component", "Database")
+	defer span.Finish()
+
+	// logic of app
+	time.Sleep(2 * time.Second)
+
+	// Simulate processing time
+
+	Redis(ctx)
+
+	Thirdparty(ctx)
+	// Call database function within the same context
+
+}
+
+// Database simulates the Database service
+func Redis(ctx context.Context) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "RedisArea")
+	span.SetTag("component", "Redis")
 	defer span.Finish()
 
 	// logic of app
 	time.Sleep(2 * time.Second) // Simulate processing time
 
 	// Call database function within the same context
-	PaymentService(ctx)
+
+}
+
+// Database simulates the Database service
+func Thirdparty(ctx context.Context) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "ThirdPartyArea")
+	span.SetTag("component", "Thirdparty")
+	defer span.Finish()
+
+	// logic of app
+	time.Sleep(2 * time.Second) // Simulate processing time
+
+	// Call database function within the same context
+
 }
 
 // Database simulates the database service
 func PaymentService(ctx context.Context) {
-	span, _ := opentracing.StartSpanFromContext(ctx, "YaghoutArea")
+	span, _ := opentracing.StartSpanFromContext(ctx, "PaymentArea")
 	defer span.Finish()
 
 	fmt.Println("Processing database request...")
@@ -66,6 +98,8 @@ func main() {
 
 	// Simulate the video list request
 	Database(ctx)
+
+	PaymentService(ctx)
 
 	// Finish the main span
 	span.Finish()
